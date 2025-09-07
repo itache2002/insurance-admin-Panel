@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base{
+  * { @apply box-border; }
+  body { @apply bg-bg text-slate-100 font-sans; }
+}
+
+@layer components{
+  .btn { @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold transition shadow-soft bg-accent/90 hover:bg-accent text-slate-950 disabled:opacity-60; }
+  .btn-ghost { @apply inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-border bg-card hover:bg-card/70; }
+  .btn-outline { @apply inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-accent/40 text-accent hover:bg-accent/10; }
+  .input { @apply w-full px-3 py-2 rounded-xl bg-slate-900 border border-border focus:outline-none focus:ring-2 focus:ring-accent/40 placeholder:text-slate-500; }
+  .select { @apply w-full px-3 py-2 rounded-xl bg-slate-900 border border-border focus:outline-none focus:ring-2 focus:ring-accent/40; }
+  .card { @apply rounded-2xl bg-card border border-border; }
+  .glass { @apply bg-white/5 backdrop-blur-md border border-white/10; }
+  .tag { @apply text-xs px-2.5 py-1 rounded-full border border-border bg-slate-900; }
+  .table { @apply w-full text-sm; }
+  .th, .td { @apply border-b border-border px-3 py-2 text-left; }
+  .kpi { @apply card p-4 md:p-6 relative overflow-hidden; }
+}
+
+
+/* ====== Responsive helpers (Tailwind-like) ====== */
+.hidden { display: none; }
+
+@media (min-width: 768px) {
+  .md\:table-cell { display: table-cell !important; }
+  .md\:block { display: block !important; }
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+  .lg\:table-cell { display: table-cell !important; }
+  .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1280px) {
+  .xl\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Buttons: better touch targets on phones */
+@media (max-width: 640px) {
+  .btn { padding: 0.625rem 1rem; min-height: 42px; }
+  .btn--block-sm { width: 100%; }
+}
+
+/* Card padding tweak for small screens */
+@media (max-width: 640px) {
+  .card { padding: 14px; }
+}
+
+/* Forms → consistent compact grid that stacks on small screens */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 12px;
+}
+@media (max-width: 768px) {
+  .form-grid { grid-template-columns: 1fr; }
+}
+.form-grid .field { min-width: 0; }
+
+/* Table wrapper: allow horizontal scroll if needed */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Table base */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table th, .table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #1f2937; /* slate-800-ish */
+  vertical-align: top;
+}
+.table th {
+  text-align: left;
+  font-weight: 600;
+  color: #cbd5e1; /* slate-300 */
+}
+
+/* Mobile: transform table into stacked cards */
+@media (max-width: 768px) {
+  .table.responsive thead { display: none; }
+  .table.responsive, .table.responsive tbody, .table.responsive tr, .table.responsive td {
+    display: block;
+    width: 100%;
+  }
+  .table.responsive tr {
+    border: 1px solid #1f2937;
+    border-radius: 12px;
+    background: #0b1220; /* dark surface */
+    margin-bottom: 12px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset;
+  }
+  .table.responsive td {
+    border: 0;
+    border-bottom: 1px dashed rgba(148,163,184,.2);
+    display: grid;
+    grid-template-columns: 42% 1fr;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .table.responsive td:last-child { border-bottom: 0; }
+  .table.responsive td::before {
+    content: attr(data-label);
+    color: #94a3b8; /* slate-400 */
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+  }
+}
+
+/* Status bubble */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.4;
+  border: 1px solid transparent;
+}
+.badge--green  { background: rgba(16,185,129,.12); color: #86efac; border-color: rgba(16,185,129,.35); }
+.badge--yellow { background: rgba(234,179,8,.12);  color: #fde68a; border-color: rgba(234,179,8,.35); }
+.badge--red    { background: rgba(239,68,68,.12);  color: #fca5a5; border-color: rgba(239,68,68,.35); }

@@ -101,28 +101,55 @@ export async function setAgentComp(agentId, { base_salary = 0, commission_rate =
 }
 
 /* ------------------- upsert monthly stats -------------------- */
+// export async function upsertMonthlyStats(
+//   agentId,
+//   month,
+//   { sales_count = 0, total_premium = 0, total_commission = 0 } = {}
+// ) {
+//   if (!isUuid(agentId)) { const e = new Error('Invalid agentId (must be UUID)'); e.status = 400; throw e }
+
+//   const s = Number(sales_count) || 0
+//   const p = Number(total_premium) || 0
+//   const c = Number(total_commission) || 0
+
+//   // normalize month to 1st of month via SQL
+//   await q(
+//     `INSERT INTO agent_monthly_stats (agent_user_id, month, sales_count, total_premium, total_commission)
+//      VALUES ($1, date_trunc('month', $2::date)::date, $3, $4, $5)
+//      ON CONFLICT (agent_user_id, month) DO UPDATE
+//        SET sales_count = EXCLUDED.sales_count,
+//            total_premium = EXCLUDED.total_premium,
+//            total_commission = EXCLUDED.total_commission`,
+//     [agentId, month || new Date().toISOString().slice(0, 10), s, p, c]
+//   )
+// }
 export async function upsertMonthlyStats(
   agentId,
   month,
   { sales_count = 0, total_premium = 0, total_commission = 0 } = {}
 ) {
-  if (!isUuid(agentId)) { const e = new Error('Invalid agentId (must be UUID)'); e.status = 400; throw e }
+  if (!isUuid(agentId)) {
+    const e = new Error('Invalid agentId (must be UUID)');
+    e.status = 400;
+    throw e;
+  }
 
-  const s = Number(sales_count) || 0
-  const p = Number(total_premium) || 0
-  const c = Number(total_commission) || 0
+  const s = Number(sales_count) || 0;
+  const p = Number(total_premium) || 0;
+  const c = Number(total_commission) || 0;
 
-  // normalize month to 1st of month via SQL
+  // Normalize month to first day of month on the DB side
   await q(
     `INSERT INTO agent_monthly_stats (agent_user_id, month, sales_count, total_premium, total_commission)
      VALUES ($1, date_trunc('month', $2::date)::date, $3, $4, $5)
      ON CONFLICT (agent_user_id, month) DO UPDATE
-       SET sales_count = EXCLUDED.sales_count,
-           total_premium = EXCLUDED.total_premium,
-           total_commission = EXCLUDED.total_commission`,
+       SET sales_count      = COALESCE(agent_monthly_stats.sales_count, 0)      + EXCLUDED.sales_count,
+           total_premium    = COALESCE(agent_monthly_stats.total_premium, 0)    + EXCLUDED.total_premium,
+           total_commission = COALESCE(agent_monthly_stats.total_commission, 0) + EXCLUDED.total_commission`,
     [agentId, month || new Date().toISOString().slice(0, 10), s, p, c]
-  )
+  );
 }
+
 
 /* ----------------- optional: read comp quick ----------------- */
 export async function getAgentComp(agentId) {

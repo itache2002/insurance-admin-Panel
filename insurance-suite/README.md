@@ -3,10 +3,7 @@
 ## Quick Start
 1. **Database**
    ```bash
-   psql < database/00_base_schema.sql
-   psql < database/01_fix_and_extend.sql
-   psql < database/02_jwt_schema.sql
-   psql < database/03_seed_super_admin.sql
+   psql < database/backupfile.sql
    ```
 2. **Backend**
    ```bash

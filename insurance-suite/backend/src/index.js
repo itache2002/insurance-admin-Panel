@@ -14,7 +14,7 @@ const app = express();
 app.set('trust proxy', 1);
 app.use(helmet());
 app.use(express.json({ limit: '1mb' }));
-app.use(cors({ origin: (process.env.CORS_ORIGIN || '').split(',').map(s => s.trim()).filter(Boolean) || true, credentials: true }));
+app.use(cors({ origin: (process.env.CORS_ORIGIN || 'https://admin.wodeyarinsurance.com').split(',').map(s => s.trim()).filter(Boolean) || true, credentials: true }));
 app.use(morgan('dev'));
 
 app.get('/health', (_req, res) => res.json({ ok: true }));

@@ -298,7 +298,7 @@ async function main() {
       // Only some customers get a premium number (as if set by admin later)
       const premium = rnd(0, 1) ? `PRM-${new Date().getFullYear()}-${String(1000 + cCounter).slice(-4)}` : null
 
-      await q(
+      await q(       
         `INSERT INTO customers
           (agent_id, name, email, phone_no, status,
            pan_no, aadhaar_no, age, spouse_name, number_of_children, parents, premium_number)
