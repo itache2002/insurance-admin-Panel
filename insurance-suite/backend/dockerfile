@@ -1,0 +1,18 @@
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+RUN apk add --no-cache dumb-init curl
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+ENV NODE_ENV=production \
+    PORT=5000
+USER node
+EXPOSE 5000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD curl -fsS http://127.0.0.1:${PORT}/health || exit 1
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["node", "index.js"]
